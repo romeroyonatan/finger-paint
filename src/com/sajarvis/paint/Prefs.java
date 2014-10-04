@@ -23,20 +23,18 @@ package com.sajarvis.paint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import com.sajarvis.fingerpaint.R;
 
 public class Prefs {
 	private SharedPreferences prefs;
-	private Editor editor;
 
 	//Initialize
 	public Prefs(Context context){
 		prefs = context.getSharedPreferences("prefs",0);	//0 = private
-		editor = prefs.edit();
 	}
 
 	//Preferences to store the state of shaking. On/Off.
     public void shakeOn(boolean on){
+    	Editor editor = prefs.edit();
     	editor.putBoolean("shakeOn", on);
     	editor.commit();
     }
@@ -50,6 +48,7 @@ public class Prefs {
     	return prefs.getInt("color", 0xFFFF0000);
     }
     public void setColor(int color){
+    	Editor editor = prefs.edit();
     	editor.putInt("color", color);
     	editor.commit();
     }
@@ -58,6 +57,7 @@ public class Prefs {
     	return prefs.getFloat("size", 20.0f);
     }
     public void setSize(float size){
+    	Editor editor = prefs.edit();
     	editor.putFloat("size", size);
     	editor.commit();
     }
@@ -66,6 +66,7 @@ public class Prefs {
     	return prefs.getString("style", "round");
     }
     public void setStyle(String style){
+    	Editor editor = prefs.edit();
     	editor.putString("style", style);
     	editor.commit();
     }
@@ -74,6 +75,7 @@ public class Prefs {
     	return prefs.getString("filter","null");
     }
     public void setFilter(String filter){
+    	Editor editor = prefs.edit();
     	editor.putString("filter", filter);
     	editor.commit();
     }
@@ -82,12 +84,14 @@ public class Prefs {
     	return prefs.getString("effect", "null");
     }
     public void setEffect(String effect){
+    	Editor editor = prefs.edit();
     	editor.putString("effect", effect);
     	editor.commit();
     }
     //Prompt
     //Preference on whether to launch the prompt
   	public void promptState(boolean show){
+  		Editor editor = prefs.edit();
   		editor.putBoolean("showPrompt", show);
   		editor.commit();
   	}
@@ -98,6 +102,6 @@ public class Prefs {
   	}
 
   	//Save state
-  	public void savePps(Pp pp){
+  	public void savePps(PathPaint pp){
   	}
 }

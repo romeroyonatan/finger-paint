@@ -11,7 +11,7 @@
     >
 <ImageView
 	android:id="@+id/allie"
-	android:src="@drawable/allie"
+	android:src="@drawable/question"
 	android:layout_alignParentTop="true"
 	android:layout_width="100dp"
 	android:layout_height="150dp"/>

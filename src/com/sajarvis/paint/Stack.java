@@ -31,10 +31,9 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import com.sajarvis.fingerpaint.R;
 
 public class Stack {
-	private ArrayList<Pp> stack;
+	private ArrayList<PathPaint> stack;
 	//Arbitrary size. I tested >100 marks and it didn't crash. Seems safe.
 	private final int SIZE = 20;
 
@@ -48,7 +47,7 @@ public class Stack {
 	private int width, height;	//For base bitmap size
 
 	public Stack(Context context, int w, int h){
-		stack = new ArrayList<Pp>(SIZE);
+		stack = new ArrayList<PathPaint>(SIZE);
 		base = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
 		bCanvas = new Canvas(base);
 		width = w; height = h;
@@ -56,7 +55,7 @@ public class Stack {
 
 	//Adds a bitmap to the top of the stack. Returns true for success, false for out of
 	//bounds.
-	public boolean add(int index, Pp pp){
+	public boolean add(int index, PathPaint pp){
 		//Comparing stack.size prevents index out of bounds. comparing index prevents
 		//Drawing when we shouldn't be drawing.
 		if(stack.size() > SIZE && index > SIZE-1){	//Delete the first one and shift the rest down
@@ -90,7 +89,7 @@ public class Stack {
 	}
 
 	//returns the bitmap at the id. id is kept track of by main.
-	public Pp get(int id){
+	public PathPaint get(int id){
 		return stack.get(id);
 	}
 

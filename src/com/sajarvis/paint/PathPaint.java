@@ -22,7 +22,6 @@ package com.sajarvis.paint;
 
 import android.graphics.Paint;
 import android.graphics.Path;
-import com.sajarvis.fingerpaint.R;
 
 public class PathPaint {
 	private Paint paint;
