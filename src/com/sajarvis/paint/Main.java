@@ -52,23 +52,25 @@
 
 package com.sajarvis.paint;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Random;
-
-import yuku.ambilwarna.AmbilWarnaDialog;
-import yuku.ambilwarna.OnAmbilWarnaListener;
-
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BlurMaskFilter;
+import android.graphics.Canvas;
+import android.graphics.DashPathEffect;
+import android.graphics.EmbossMaskFilter;
+import android.graphics.MaskFilter;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.GradientDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -78,10 +80,32 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.view.*;
-import android.view.animation.*;
-import android.widget.*;
+import android.view.Display;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.sajarvis.fingerpaint.R;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Random;
+
+import yuku.ambilwarna.AmbilWarnaDialog;
+import yuku.ambilwarna.OnAmbilWarnaListener;
 
 //TODO add import from camera option.
 //TODO Make brush selector more graphic.
@@ -193,30 +217,54 @@ public class Main extends GraphicsActivity {
 
     @Override
     public void onBackPressed() {
-
         Intent originalIntent = this.getIntent();
-
         if(originalIntent.hasExtra(MediaStore.EXTRA_OUTPUT)) {
 
-            Uri fileUri = originalIntent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Enviar imagen")
+                    .setMessage("¿Desea enviar esta imagen?")
+                    .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            sendImage();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            noSend();
+                        }
+                    })
+                    .show();
+        } else
+            super.onBackPressed();
+    }
 
-            try {
-                Bitmap bMap = Bitmap.createBitmap(myView.getDrawingCache());
+    private void noSend() {
+        setResult(Activity.RESULT_CANCELED);
+        super.onBackPressed();
+    }
 
-                OutputStream fOut = null;
-                File file = new File(fileUri.getPath());
-                file.createNewFile();
-                fOut = new FileOutputStream(file);
-                bMap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
-                fOut.flush();
-                fOut.close();
-            }catch (IOException ex) {
-                setResult(Activity.RESULT_CANCELED);
-            }
+    private void sendImage() {
+        Intent originalIntent = this.getIntent();
+        Uri fileUri = originalIntent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
 
-            setResult(Activity.RESULT_OK);
+        try {
+            Bitmap bMap = Bitmap.createBitmap(myView.getDrawingCache());
+
+            OutputStream fOut = null;
+            File file = new File(fileUri.getPath());
+            file.createNewFile();
+            fOut = new FileOutputStream(file);
+            bMap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+            fOut.flush();
+            fOut.close();
+        }catch (IOException ex) {
+            setResult(Activity.RESULT_CANCELED);
         }
 
+        setResult(Activity.RESULT_OK);
         super.onBackPressed();
     }
 
