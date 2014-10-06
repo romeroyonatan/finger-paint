@@ -61,6 +61,8 @@ import java.util.Random;
 
 import yuku.ambilwarna.AmbilWarnaDialog;
 import yuku.ambilwarna.OnAmbilWarnaListener;
+
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -75,6 +77,7 @@ import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.*;
 import android.view.animation.*;
 import android.widget.*;
@@ -187,6 +190,35 @@ public class Main extends GraphicsActivity {
 		//Set the buttons disabled cause there's nothing in the stack
 		updateUndoRedo();
 	}
+
+    @Override
+    public void onBackPressed() {
+
+        Intent originalIntent = this.getIntent();
+
+        if(originalIntent.hasExtra(MediaStore.EXTRA_OUTPUT)) {
+
+            Uri fileUri = originalIntent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
+
+            try {
+                Bitmap bMap = Bitmap.createBitmap(myView.getDrawingCache());
+
+                OutputStream fOut = null;
+                File file = new File(fileUri.getPath());
+                file.createNewFile();
+                fOut = new FileOutputStream(file);
+                bMap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+                fOut.flush();
+                fOut.close();
+            }catch (IOException ex) {
+                setResult(Activity.RESULT_CANCELED);
+            }
+
+            setResult(Activity.RESULT_OK);
+        }
+
+        super.onBackPressed();
+    }
 
 	//Make sure the accelerometer listener stops when the app does.
 	@Override
@@ -1192,7 +1224,16 @@ public class Main extends GraphicsActivity {
 					break;
 				}
 			}
+			
+			this.performClick();
+			
 			return true;
+		}
+		
+		@Override
+		public boolean performClick()
+		{
+			return super.performClick();
 		}
 	}
 }

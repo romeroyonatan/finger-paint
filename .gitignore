@@ -1,3 +1,11 @@
 # Mac files
 *.DS_STORE
 /bin
+.idea/
+.gradle/
+build/
+obj/
+*.iml
+local.properties
+*.keystore
+gradle.properties
