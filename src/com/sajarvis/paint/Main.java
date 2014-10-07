@@ -251,6 +251,12 @@ public class Main extends GraphicsActivity {
         Uri fileUri = originalIntent.getParcelableExtra(MediaStore.EXTRA_OUTPUT);
 
         try {
+            if(grayBack.getVisibility() == View.VISIBLE){
+                myView.setBackgroundResource(R.color.gray);
+            }else{
+                myView.setBackgroundDrawable(backImage.getDrawable());
+            }
+
             Bitmap bMap = Bitmap.createBitmap(myView.getDrawingCache());
 
             OutputStream fOut = null;
